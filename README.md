@@ -4,6 +4,8 @@ A collection of reusable justfiles.
 ## charm-dev
 A collection of recipes for setting up a development environment for charmed operators.
 
+- [charm-dev for Ubuntu 24.04](charm-dev_ubuntu-24.04.just)
+
 For a "full install", use the `charm-dev` recipe.
 
 ```bash
