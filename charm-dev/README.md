@@ -10,6 +10,7 @@ Currently available:
 For a "full install", use the `charm-dev` recipe.
 
 ```bash
+wget https://raw.githubusercontent.com/sed-i/reusable-justfiles/refs/heads/main/charm-dev/ubuntu-24.04.just
 sudo just -f ubuntu-24.04.just charm-dev
 ```
 
