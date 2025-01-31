@@ -2,7 +2,7 @@
 # multipass launch noble --name charm-dev --memory 16G --cpus 8 --disk 100G
 # multipass shell charm-dev
 # sudo snap install --classic just
-# sudo just -f charm-dev_ubuntu-24.04.just charm-dev
+# sudo just -f ubuntu-24.04.just charm-dev
 
 
 @_banner:
