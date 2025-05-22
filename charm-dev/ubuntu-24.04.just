@@ -149,5 +149,23 @@ nu:
   snap install nushell --classic
 
 
+microceph:
+  # Ref: https://canonical-microceph.readthedocs-hosted.com/en/latest/tutorial/get-started/
+  sudo snap install microceph
+  sudo snap refresh --hold microceph
+  sudo microceph cluster bootstrap
+  sudo microceph disk add loop,4G,3
+  sudo ceph status
+
+  sudo microceph enable rgw
+  sudo microceph.ceph -s
+  sudo microceph.radosgw-admin user create --uid=user --display-name=User
+  sudo microceph.radosgw-admin key create --uid=user --key-type=s3 --access-key=access-key --secret-key=secret-key
+
+  sudo apt install -y s3cmd
+  # Now you can create buckets with:
+  # s3cmd --host=localhost:80 --access_key=access-key --secret_key=secret-key --host-bucket= --no-ssl mb s3://loki
+
+
 charm-dev: update init utils microk8s juju starcraft default-models && _banner
 
