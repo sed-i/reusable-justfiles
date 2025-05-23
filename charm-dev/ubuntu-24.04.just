@@ -188,7 +188,7 @@ _cos_tf:
     channel                       = "latest/edge"
     s3_endpoint                   = "http://{{IPADDR}}:8080"
     s3_password                   = "secret-key"
-    s3_user                       = "user"
+    s3_user                       = "access-key"
     loki_bucket                   = "loki"
     mimir_bucket                  = "mimir"
     tempo_bucket                  = "tempo"
@@ -205,7 +205,8 @@ _cos_tf:
     tempo_querier_units           = 1
     tempo_query_frontend_units    = 1
     cloud                         = "self-managed"
-    ssc_channel                   = "latest/edge"
+    ssc_channel                   = "1/edge"
+    use_tls                       = true
   }
   EOF
   terraform -chdir=$dn init
@@ -217,8 +218,8 @@ terraform:
 
 
 cos: terraform && _cos_tf
-  s3cmd --host=localhost:80 --access_key=access-key --secret_key=secret-key --host-bucket= --no-ssl mb s3://loki
-  s3cmd --host=localhost:80 --access_key=access-key --secret_key=secret-key --host-bucket= --no-ssl mb s3://mimir
-  s3cmd --host=localhost:80 --access_key=access-key --secret_key=secret-key --host-bucket= --no-ssl mb s3://tempo
+  s3cmd --host={{IPADDR}}:8080 --access_key=access-key --secret_key=secret-key --host-bucket= --no-ssl mb s3://loki
+  s3cmd --host={{IPADDR}}:8080 --access_key=access-key --secret_key=secret-key --host-bucket= --no-ssl mb s3://mimir
+  s3cmd --host={{IPADDR}}:8080 --access_key=access-key --secret_key=secret-key --host-bucket= --no-ssl mb s3://tempo
 
-  juju add-model cos
+  juju add-model cos --config logging-config="<root>=WARNING; unit=DEBUG" --config update-status-hook-interval="60m"
