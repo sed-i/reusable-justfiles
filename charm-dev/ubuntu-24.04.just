@@ -72,7 +72,7 @@ utils: git
   snap install astral-uv --classic
 
 
-IPADDR := shell("ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'")
+IPADDR := `ip -4 -j route get 2.2.2.2 | jq -r '.[] | .prefsrc'`
 microk8s:
   snap install microk8s --channel=1.31-strict/stable
   snap alias microk8s.kubectl kubectl
@@ -161,14 +161,16 @@ microceph:
   sudo microceph disk add loop,4G,3
   sudo ceph status
 
-  sudo microceph enable rgw
+  # Ref: https://canonical-microceph.readthedocs-hosted.com/en/latest/reference/commands/enable/#rgw
+  # (Traefik will take ports 80, 443)
+  sudo microceph enable rgw --port 8080 --ssl-port 8443
   sudo microceph.ceph -s
   sudo microceph.radosgw-admin user create --uid=user --display-name=User
   sudo microceph.radosgw-admin key create --uid=user --key-type=s3 --access-key=access-key --secret-key=secret-key
 
   sudo apt install -y s3cmd
   # Now you can create buckets with:
-  # s3cmd --host=localhost:80 --access_key=access-key --secret_key=secret-key --host-bucket= --no-ssl mb s3://loki
+  # s3cmd --host=localhost:8080 --access_key=access-key --secret_key=secret-key --host-bucket= --no-ssl mb s3://loki
 
 
 charm-dev: update init utils microk8s juju starcraft default-models && _banner
@@ -184,7 +186,7 @@ _cos_tf:
     source                        = "git::https://github.com/canonical/observability//terraform/modules/cos"
     model_name                    = "cos"
     channel                       = "latest/edge"
-    s3_endpoint                   = "http://localhost:80"
+    s3_endpoint                   = "http://{{IPADDR}}:8080"
     s3_password                   = "secret-key"
     s3_user                       = "user"
     loki_bucket                   = "loki"
