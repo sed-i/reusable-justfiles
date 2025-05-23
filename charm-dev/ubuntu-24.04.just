@@ -109,7 +109,13 @@ microk8s:
   microk8s config | sudo -u ${SUDO_USER:-$USER} tee /home/${SUDO_USER:-$USER}/.kube/config > /dev/null
 
 
-juju:
+lxd:
+  # Ref: https://github.com/canonical/setup-lxd/blob/main/action.yml
+  lxd init --auto
+  adduser ${SUDO_USER:-$USER} lxd
+
+
+juju: lxd
   snap install juju --channel=3.6/stable
 
   # Make sure juju directory is there
@@ -121,11 +127,9 @@ juju:
   sudo snap connect jhack:ssh-read snapd
 
 
-starcraft:
+starcraft: lxd
   snap install --classic charmcraft
   apt install -y gnome-keyring
-  lxd init --auto
-  adduser ${SUDO_USER:-$USER} lxd
 
   snap install --classic rockcraft
   snap install --classic snapcraft
@@ -169,3 +173,50 @@ microceph:
 
 charm-dev: update init utils microk8s juju starcraft default-models && _banner
 
+
+_cos_tf:
+  #!/usr/bin/env sh
+  dn=$(mktemp -d)
+  echo "Workdir: $dn"
+  fn="${dn}/cos.tf"
+  cat << 'EOF' > $fn
+  module "cos" {
+    source                        = "git::https://github.com/canonical/observability//terraform/modules/cos"
+    model_name                    = "cos"
+    channel                       = "latest/edge"
+    s3_endpoint                   = "http://localhost:80"
+    s3_password                   = "secret-key"
+    s3_user                       = "user"
+    loki_bucket                   = "loki"
+    mimir_bucket                  = "mimir"
+    tempo_bucket                  = "tempo"
+    loki_backend_units            = 1
+    loki_read_units               = 1
+    loki_write_units              = 1
+    mimir_backend_units           = 1
+    mimir_read_units              = 1
+    mimir_write_units             = 1
+    tempo_compactor_units         = 1
+    tempo_distributor_units       = 1
+    tempo_ingester_units          = 1
+    tempo_metrics_generator_units = 1
+    tempo_querier_units           = 1
+    tempo_query_frontend_units    = 1
+    cloud                         = "self-managed"
+    ssc_channel                   = "latest/edge"
+  }
+  EOF
+  terraform -chdir=$dn init
+  terraform -chdir=$dn apply -auto-approve
+
+
+terraform:
+  sudo snap install terraform --classic
+
+
+cos: terraform && _cos_tf
+  s3cmd --host=localhost:80 --access_key=access-key --secret_key=secret-key --host-bucket= --no-ssl mb s3://loki
+  s3cmd --host=localhost:80 --access_key=access-key --secret_key=secret-key --host-bucket= --no-ssl mb s3://mimir
+  s3cmd --host=localhost:80 --access_key=access-key --secret_key=secret-key --host-bucket= --no-ssl mb s3://tempo
+
+  juju add-model cos
