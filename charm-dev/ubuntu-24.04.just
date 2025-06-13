@@ -184,29 +184,47 @@ _cos_tf:
   cat << 'EOF' > $fn
   module "cos" {
     source                        = "git::https://github.com/canonical/observability//terraform/modules/cos"
-    model_name                    = "cos"
-    channel                       = "latest/edge"
+    model                         = "cos"
+    channel                       = "2/edge"
+    s3_integrator_channel         = "2/edge"
+    ssc_channel                   = "1/edge"
+    traefik_channel               = "latest/edge"
+    cloud                         = "self-managed"
+    use_tls                       = true
     s3_endpoint                   = "http://{{IPADDR}}:8080"
-    s3_password                   = "secret-key"
-    s3_user                       = "access-key"
+    s3_secret_key                 = "secret-key"
+    s3_access_key                 = "access-key"
     loki_bucket                   = "loki"
     mimir_bucket                  = "mimir"
     tempo_bucket                  = "tempo"
+    loki_coordinator_units        = 1
     loki_backend_units            = 1
     loki_read_units               = 1
     loki_write_units              = 1
+    mimir_coordinator_units       = 1
     mimir_backend_units           = 1
     mimir_read_units              = 1
     mimir_write_units             = 1
+    tempo_coordinator_units       = 1
     tempo_compactor_units         = 1
     tempo_distributor_units       = 1
     tempo_ingester_units          = 1
     tempo_metrics_generator_units = 1
     tempo_querier_units           = 1
     tempo_query_frontend_units    = 1
-    cloud                         = "self-managed"
-    ssc_channel                   = "1/edge"
-    use_tls                       = true
+    alertmanager_revision         = null
+    catalogue_revision            = null
+    grafana_revision              = null
+    grafana_agent_revision        = null
+    loki_coordinator_revision     = null
+    loki_worker_revision          = null
+    mimir_coordinator_revision    = null
+    mimir_worker_revision         = null
+    ssc_revision                  = null
+    s3_integrator_revision        = 157 # FIXME: https://github.com/canonical/observability/issues/342
+    tempo_coordinator_revision    = null
+    tempo_worker_revision         = null
+    traefik_revision              = null
   }
   EOF
   terraform -chdir=$dn init
