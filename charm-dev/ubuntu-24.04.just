@@ -212,19 +212,7 @@ _cos_tf:
     tempo_metrics_generator_units = 1
     tempo_querier_units           = 1
     tempo_query_frontend_units    = 1
-    alertmanager_revision         = null
-    catalogue_revision            = null
-    grafana_revision              = null
-    grafana_agent_revision        = null
-    loki_coordinator_revision     = null
-    loki_worker_revision          = null
-    mimir_coordinator_revision    = null
-    mimir_worker_revision         = null
-    ssc_revision                  = null
     s3_integrator_revision        = 157 # FIXME: https://github.com/canonical/observability/issues/342
-    tempo_coordinator_revision    = null
-    tempo_worker_revision         = null
-    traefik_revision              = null
   }
   EOF
   terraform -chdir=$dn init
