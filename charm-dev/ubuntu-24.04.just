@@ -183,7 +183,7 @@ _cos_tf:
   fn="${dn}/cos.tf"
   cat << 'EOF' > $fn
   module "cos" {
-    source                        = "git::https://github.com/canonical/observability//terraform/modules/cos"
+    source                        = "git::https://github.com/canonical/observability-stack//terraform/modules/cos"
     model                         = "cos"
     channel                       = "2/edge"
     s3_integrator_channel         = "2/edge"
