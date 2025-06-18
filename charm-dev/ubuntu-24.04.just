@@ -108,6 +108,18 @@ microk8s:
   sudo -u ${SUDO_USER:-$USER} mkdir -p /home/${SUDO_USER:-$USER}/.kube
   microk8s config | sudo -u ${SUDO_USER:-$USER} tee /home/${SUDO_USER:-$USER}/.kube/config > /dev/null
 
+ck8s:
+  snap install k8s --classic --channel=1.33-classic/stable
+  k8s bootstrap
+  k8s status --wait-ready
+  k8s enable local-storage
+  k8s enable load-balancer
+  k8s set load-balancer.l2-mode=true load-balancer.cidrs="{{IPADDR}}/32"
+  k8s status --wait-ready
+
+  k8s kubectl config view --raw | sudo -u ${SUDO_USER:-$USER} /snap/juju/current/bin/juju add-k8s ck8s --client
+  echo "Bootstrapping K8s controller..."
+  sudo -u ${SUDO_USER:-$USER} juju bootstrap ck8s
 
 lxd:
   # Ref: https://github.com/canonical/setup-lxd/blob/main/action.yml
