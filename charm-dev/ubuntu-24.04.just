@@ -109,7 +109,7 @@ microk8s:
   microk8s config | sudo -u ${SUDO_USER:-$USER} tee /home/${SUDO_USER:-$USER}/.kube/config > /dev/null
 
 ck8s:
-  snap install k8s --classic --channel=1.33-classic/stable
+  snap install k8s --classic --channel=1.35-classic/stable
   k8s bootstrap
   k8s status --wait-ready
   k8s enable local-storage
@@ -185,7 +185,7 @@ microceph:
   # s3cmd --host=localhost:8080 --access_key=access-key --secret_key=secret-key --host-bucket= --no-ssl mb s3://loki
 
 
-charm-dev: update init utils ck8s juju starcraft default-models && _banner
+charm-dev: update init utils juju ck8s starcraft default-models && _banner
 
 
 _cos_tf:
