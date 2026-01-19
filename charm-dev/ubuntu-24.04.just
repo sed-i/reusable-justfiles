@@ -185,7 +185,7 @@ microceph:
   # s3cmd --host=localhost:8080 --access_key=access-key --secret_key=secret-key --host-bucket= --no-ssl mb s3://loki
 
 
-charm-dev: update init utils microk8s juju starcraft default-models && _banner
+charm-dev: update init utils ck8s juju starcraft default-models && _banner
 
 
 _cos_tf:
