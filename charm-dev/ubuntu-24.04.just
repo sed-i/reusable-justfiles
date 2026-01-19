@@ -150,8 +150,8 @@ starcraft: lxd
 default-models:
   sudo -u ${SUDO_USER:-$USER} juju controllers --format=json | jq -r '.controllers | keys .[]' | grep -q '^lxd$' || sudo -u ${SUDO_USER:-$USER} juju bootstrap localhost lxd
   sudo -u ${SUDO_USER:-$USER} juju models --controller lxd --format=json | jq -r '.models | .[].name' | grep -q '^admin/welcome-lxd$' || sudo -u ${SUDO_USER:-$USER} juju add-model --controller lxd --config logging-config="<root>=WARNING; unit=DEBUG" --config update-status-hook-interval="60m" welcome-lxd
-  sudo -u ${SUDO_USER:-$USER} juju controllers --format=json | jq -r '.controllers | keys .[]' | grep -q '^microk8s$' || sudo -u ${SUDO_USER:-$USER} juju bootstrap microk8s microk8s
-  sudo -u ${SUDO_USER:-$USER} juju models --controller microk8s --format=json | jq -r '.models | .[].name' | grep -q '^admin/welcome-k8s$' || sudo -u ${SUDO_USER:-$USER} juju add-model --controller microk8s --config logging-config="<root>=WARNING; unit=DEBUG" --config update-status-hook-interval="60m" welcome-k8s
+  sudo -u ${SUDO_USER:-$USER} juju controllers --format=json | jq -r '.controllers | keys .[]' | grep -q '^ck8s$' || sudo -u ${SUDO_USER:-$USER} juju ck8s ck8s
+  sudo -u ${SUDO_USER:-$USER} juju models --controller ck8s --format=json | jq -r '.models | .[].name' | grep -q '^admin/welcome-k8s$' || sudo -u ${SUDO_USER:-$USER} juju add-model --controller ck8s --config logging-config="<root>=WARNING; unit=DEBUG" --config update-status-hook-interval="60m" welcome-k8s
 
 
 oh-my-zsh:
